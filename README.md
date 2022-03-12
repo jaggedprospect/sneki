@@ -1,4 +1,4 @@
-# sneki
+# Sneki
 
 Yet another snake game.
 ___
