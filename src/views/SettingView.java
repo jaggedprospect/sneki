@@ -1,7 +1,7 @@
-package panels;
+package views;
 
 import javax.swing.JPanel;
 
-public class SettingsPanel extends JPanel{
+public class SettingView extends JPanel{
     
 }
