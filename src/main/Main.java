@@ -43,6 +43,7 @@ public class Main {
                 
                 if(System.currentTimeMillis() - time >= 1000){
                     System.out.println("fps: " + frames);
+                    gameController.fps = frames;
                     time += 1000;
                     frames = 0;
                 }

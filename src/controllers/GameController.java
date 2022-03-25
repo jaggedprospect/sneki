@@ -9,33 +9,34 @@ import javax.swing.JPanel;
 
 import main.Input;
 import models.*;
-import models.SnakeLink.State;
+import models.SnakeLink.LinkState;
+import models.Snake.SnakeState;
 import views.GameView;
 
 // Controls models and views
 public class GameController {
 
-    private static final int X_SPEED = 3;
-    private static final int Y_SPEED = 3;
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 800;
+    private static final int JUMP = 3;          // distance each SnakeLink moves on update
+    private static final int WIDTH = 800;       // width of JFrame
+    private static final int HEIGHT = 800;      // height of JFrame
+    private static final int ORIGIN_X = 200;    // starting X position for Snake
+    private static final int ORIGIN_Y = 200;    // starting Y position for Snake
     
     private JFrame frame;
     private HashMap<String, JPanel> views;
     private JPanel currentView;
     private Input input;
 
-    private SnakeLink snake;
+    private Snake snake;
+
+    // temp
+    public int fps;
 
     public GameController(){
         frame = new JFrame();
         initUI();
 
-        snake = new SnakeLink();
-        
-        // temp
-        snake.setX(200);
-        snake.setY(200);
+        snake = new Snake();
     }
 
     private void initUI(){
@@ -50,7 +51,7 @@ public class GameController {
             frame.add(views.get(key));
         }
 
-        // temporary
+        // temp
         currentView = views.get("game");
 
         input = new Input();
@@ -77,47 +78,41 @@ public class GameController {
         return input;
     }
 
-    public SnakeLink getSnake(){
+    public Snake getSnake(){
         return snake;
     }
 
-    public void moveX(int dX){
-        snake.setX(snake.getX() + X_SPEED * dX);
-    }
-
-    public void moveY(int dY){
-        snake.setY(snake.getY() + Y_SPEED * dY);
-    }
-
     private void checkInput(){
-        if(input.isKeyDown(KeyEvent.VK_UP) && snake.getCurrentState() != State.MOVING_DOWN){
-            snake.setCurrentState(State.MOVING_UP);
-            //moveY(-1);
-        }else if(input.isKeyDown(KeyEvent.VK_DOWN) && snake.getCurrentState() != State.MOVING_UP){
-            snake.setCurrentState(State.MOVING_DOWN);
-            //moveY(1);
-        }else if(input.isKeyDown(KeyEvent.VK_LEFT) && snake.getCurrentState() != State.MOVING_RIGHT){
-            snake.setCurrentState(State.MOVING_LEFT);
-            //moveX(-1);
-        }else if(input.isKeyDown(KeyEvent.VK_RIGHT) && snake.getCurrentState() != State.MOVING_LEFT){
-            snake.setCurrentState(State.MOVING_RIGHT);
-            //moveX(1);
+        if(input.isKeyDown(KeyEvent.VK_UP) && snake.getHead().getCurrentState() != LinkState.MOVING_DOWN){
+            snake.getHead().setCurrentState(LinkState.MOVING_UP);
+        }else if(input.isKeyDown(KeyEvent.VK_DOWN) && snake.getHead().getCurrentState() != LinkState.MOVING_UP){
+            snake.getHead().setCurrentState(LinkState.MOVING_DOWN);
+        }else if(input.isKeyDown(KeyEvent.VK_LEFT) && snake.getHead().getCurrentState() != LinkState.MOVING_RIGHT){
+            snake.getHead().setCurrentState(LinkState.MOVING_LEFT);
+        }else if(input.isKeyDown(KeyEvent.VK_RIGHT) && snake.getHead().getCurrentState() != LinkState.MOVING_LEFT){
+            snake.getHead().setCurrentState(LinkState.MOVING_RIGHT);
         }
     }
 
     private void moveSnake(){
-        if(snake.getCurrentState() == State.MOVING_UP){
-            moveY(-1);
-        }else if(snake.getCurrentState() == State.MOVING_DOWN){
-            moveY(1);
-        }else if(snake.getCurrentState() == State.MOVING_LEFT){
-            moveX(-1);
-        }else if(snake.getCurrentState() == State.MOVING_RIGHT){
-            moveX(1);
-        }else if(snake.getCurrentState() == State.IDLE){
-            // do nothing
+
+        if(snake.getCurrentState() == SnakeState.SPLITTING){
+
         }else{
-            System.err.println("[ERROR] invalid State - GameController.java, moveSnake()");
+            for(SnakeLink link : snake.getLinks()){
+                switch(link.getCurrentState()){
+                    case MOVING_UP:
+                        break;
+                    case MOVING_DOWN:
+                        break;
+                    case MOVING_LEFT:
+                        break;
+                    case MOVING_RIGHT:
+                        break;
+                    default:
+                        System.err.println("[ERROR] invalid State - GameController.java, moveSnake()");
+                }
+            }
         }
     }
 
